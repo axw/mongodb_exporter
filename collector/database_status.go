@@ -70,11 +70,11 @@ func (dbStatus *DatabaseStatus) Export(ch chan<- prometheus.Metric) {
 			objectsTotal.WithLabelValues(stats.Name, shard).Set(float64(stats.Objects))
 		}
 	} else {
-		indexSize.WithLabelValues(dbStatus.Name).Set(float64(dbStatus.IndexSize))
-		dataSize.WithLabelValues(dbStatus.Name).Set(float64(dbStatus.DataSize))
-		collectionsTotal.WithLabelValues(dbStatus.Name).Set(float64(dbStatus.Collections))
-		indexesTotal.WithLabelValues(dbStatus.Name).Set(float64(dbStatus.Indexes))
-		objectsTotal.WithLabelValues(dbStatus.Name).Set(float64(dbStatus.Objects))
+		indexSize.WithLabelValues(dbStatus.Name, "").Set(float64(dbStatus.IndexSize))
+		dataSize.WithLabelValues(dbStatus.Name, "").Set(float64(dbStatus.DataSize))
+		collectionsTotal.WithLabelValues(dbStatus.Name, "").Set(float64(dbStatus.Collections))
+		indexesTotal.WithLabelValues(dbStatus.Name, "").Set(float64(dbStatus.Indexes))
+		objectsTotal.WithLabelValues(dbStatus.Name, "").Set(float64(dbStatus.Objects))
 	}
 
 	indexSize.Collect(ch)
@@ -102,7 +102,7 @@ func (dbStatus *DatabaseStatus) Describe(ch chan<- *prometheus.Desc) {
 // GetDatabaseStatus returns stats for a given database
 func GetDatabaseStatus(session *mgo.Session, db string) *DatabaseStatus {
 	dbStatus := &DatabaseStatus{}
-	err := session.DB(db).Run(bson.D{{"dbStats", 1}, {"scale", 1}}, &dbStatus)
+	err := session.DB(db).Run(bson.D{{"dbStats", 1}, {"scale", 1}}, &dbStatus.RawStatus)
 	if err != nil {
 		glog.Error(err)
 		return nil

@@ -11,13 +11,13 @@ var (
 		Name:      "ratio",
 		Help:      "The value of ratio displays the relationship between lockTime and totalTime. Low values indicate that operations have held the globalLock frequently for shorter periods of time. High values indicate that operations have held globalLock infrequently for longer periods of time",
 	})
-	globalLockTotal = prometheus.NewCounter(prometheus.CounterOpts{
+	globalLockTotal = prometheus.NewGauge(prometheus.GaugeOpts{
 		Namespace: Namespace,
 		Subsystem: "global_lock",
 		Name:      "total",
 		Help:      "The value of totalTime represents the time, in microseconds, since the database last started and creation of the globalLock. This is roughly equivalent to total server uptime",
 	})
-	globalLockLockTotal = prometheus.NewCounter(prometheus.CounterOpts{
+	globalLockLockTotal = prometheus.NewGauge(prometheus.GaugeOpts{
 		Namespace: Namespace,
 		Subsystem: "global_lock",
 		Name:      "lock_total",

@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	indexCountersMissRatio = prometheus.NewGauge(prometheus.GaugeOpts{
+	indexGaugesMissRatio = prometheus.NewGauge(prometheus.GaugeOpts{
 		Namespace: Namespace,
 		Subsystem: "index_counters",
 		Name:      "miss_ratio",
@@ -14,7 +14,7 @@ var (
 )
 
 var (
-	indexCountersTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
+	indexGaugesTotal = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: Namespace,
 		Name:      "index_counters_total",
 		Help:      "Total indexes by type",
@@ -31,21 +31,21 @@ type IndexCounterStats struct {
 }
 
 // Export exports the data to prometheus.
-func (indexCountersStats *IndexCounterStats) Export(ch chan<- prometheus.Metric) {
-	indexCountersTotal.WithLabelValues("accesses").Set(indexCountersStats.Accesses)
-	indexCountersTotal.WithLabelValues("hits").Set(indexCountersStats.Hits)
-	indexCountersTotal.WithLabelValues("misses").Set(indexCountersStats.Misses)
-	indexCountersTotal.WithLabelValues("resets").Set(indexCountersStats.Resets)
+func (indexGaugesStats *IndexCounterStats) Export(ch chan<- prometheus.Metric) {
+	indexGaugesTotal.WithLabelValues("accesses").Set(indexGaugesStats.Accesses)
+	indexGaugesTotal.WithLabelValues("hits").Set(indexGaugesStats.Hits)
+	indexGaugesTotal.WithLabelValues("misses").Set(indexGaugesStats.Misses)
+	indexGaugesTotal.WithLabelValues("resets").Set(indexGaugesStats.Resets)
 
-	indexCountersMissRatio.Set(indexCountersStats.MissRatio)
+	indexGaugesMissRatio.Set(indexGaugesStats.MissRatio)
 
-	indexCountersTotal.Collect(ch)
-	indexCountersMissRatio.Collect(ch)
+	indexGaugesTotal.Collect(ch)
+	indexGaugesMissRatio.Collect(ch)
 
 }
 
 // Describe describes the metrics for prometheus
-func (indexCountersStats *IndexCounterStats) Describe(ch chan<- *prometheus.Desc) {
-	indexCountersTotal.Describe(ch)
-	indexCountersMissRatio.Describe(ch)
+func (indexGaugesStats *IndexCounterStats) Describe(ch chan<- *prometheus.Desc) {
+	indexGaugesTotal.Describe(ch)
+	indexGaugesMissRatio.Describe(ch)
 }
